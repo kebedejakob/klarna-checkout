@@ -2,6 +2,7 @@ import config from './config';
 
 import KlarnaService from './services/KlarnaService';
 const express = require('express');
+const path = require('path');
 const exphbs = require('express-handlebars');
 const app = express();
 
@@ -12,8 +13,9 @@ const hbs = exphbs.create({
 
 // Register `hbs.engine` with the Express app.
 app.engine('handlebars', hbs.engine);
-app.set('views', __dirname + '/views/');
 app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
+
 // app.enable('view cache'); enable  in prod
 
 // Routes:
@@ -28,7 +30,6 @@ app.get('/', function (req, res, next) {
             layout: false,
             klarna_checkout: klarnaCheckoutHTML
         });
-
     }).catch((err) => {
         console.error(err);
     });
@@ -39,12 +40,11 @@ app.get('/confirmation', function (req, res, next) {
     const readOrderPromise = KlarnaService.readOrder(order_id);
     readOrderPromise.then(response => {
         const klarnaSummaryHTML = response.html_snippet;
-        console.log(klarnaSummaryHTML);
         res.render('checkout', {
             layout: false,
-            klarna_summary: klarnaSummaryHTML
+            klarna_summary: klarnaSummaryHTML,
         });
-
+        console.log("rendered");
     }).catch((err) => {
         console.error(err);
     });

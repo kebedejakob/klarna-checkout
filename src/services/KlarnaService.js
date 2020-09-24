@@ -50,7 +50,7 @@ class KlarnaService {
         return new Promise((resolve, reject) => {
             RESTService.getJSON(requestOptions, (resCode, obj) => {
                 if (resCode === 200) {
-                    resolve(obj)
+                    resolve(obj);
                 } else {
                     reject(obj);
                 }
