@@ -30,7 +30,6 @@ class KlarnaService {
         requestOptions.method = 'POST';
         const orderBody = this.getProductDetails(productId, quantity);
         requestOptions.body = orderBody;
-
         return new Promise((resolve, reject) => {
             RESTService.getJSON(requestOptions, (resCode, obj) => {
                 if (resCode === 201) {
@@ -46,7 +45,6 @@ class KlarnaService {
         const requestOptions = this.getKlarnaRequestOptions();
         requestOptions.path = `/checkout/v3/orders/${order_id}`;
         requestOptions.method = 'GET';
-
         return new Promise((resolve, reject) => {
             RESTService.getJSON(requestOptions, (resCode, obj) => {
                 if (resCode === 200) {
@@ -58,18 +56,60 @@ class KlarnaService {
         })
     }
 
+    static acknowledgeOrder(order_id) {
+        const requestOptions = this.getKlarnaRequestOptions();
+        requestOptions.path = `/ordermanagement/v1/orders/${order_id}/acknowledge`;
+        requestOptions.method = 'POST';
+        requestOptions.body = JSON.stringify({
+            order_id
+        });
+
+        return new Promise((resolve, reject) => {
+            RESTService.getJSON(requestOptions, (resCode, obj) => {
+                if (resCode === 204) {
+                    resolve(obj);
+                } else {
+                    reject(obj);
+                }
+            });;
+        })
+    }
+
+    static captureOrder(order_id, productId, quantity) {
+        const requestOptions = this.getKlarnaRequestOptions();
+        requestOptions.path = `/ordermanagement/v1/orders/${order_id}/captures`;
+        requestOptions.method = 'POST';
+
+        const orderData = this.getOrderData(productId, quantity);
+        requestOptions.body = JSON.stringify({
+            captured_amount: orderData.order_amount,
+            reference: orderData.reference
+        });
+
+        return new Promise((resolve, reject) => {
+            RESTService.getJSON(requestOptions, (resCode, obj) => {
+                if (resCode === 201) {
+                    resolve(obj);
+                } else {
+                    reject(obj);
+                }
+            });;
+        })
+    }
+
     // Perhaps make this call an external API that gets order data.
     static getOrderData(productId, quantity) {
         const unit_price = 399700; // get from externalAPI with productId
-        const tax_rate = 1000; // get from externalAPI with productId
-        const total_amount = unit_price * quantity;
+        const tax_rate = 2500; // get from externalAPI with productId
+        const total_amount = unit_price * parseInt(quantity);
         const total_tax_amount = total_amount - total_amount * 10000 / (10000 + tax_rate);
         const order_lines = [{
-            "type": "physical",
-            "reference": "19-402-SWE",
+            "type": "digital",
+            "reference": "ECOM_VIKING_KLARNA",
             "name": "Ecom Viking",
-            "quantity": quantity,
+            "quantity": parseInt(quantity),
             "quantity_unit": "pcs",
+            "image_url": 'https://cdn.fs.teachablecdn.com/tMMFSFNLTICqp6RcY4zM',
             unit_price,
             tax_rate,
             total_amount,
@@ -78,11 +118,6 @@ class KlarnaService {
         }];
         const order_amount = order_lines[0].total_amount;
         const order_tax_amount = order_lines[0].total_tax_amount;
-        console.log({
-            order_amount,
-            order_tax_amount,
-            order_lines
-        });
         return {
             order_amount,
             order_tax_amount,

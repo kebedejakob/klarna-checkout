@@ -15,7 +15,13 @@ class RESTService {
             });
 
             res.on('end', () => {
-                let obj = JSON.parse(output);
+                let obj;
+                try {
+                    obj = JSON.parse(output);
+                } catch {
+                    obj = output;
+                }
+
                 onResult(res.statusCode, obj);
             });
         });
