@@ -24,11 +24,11 @@ class KlarnaService {
         };
     }
 
-    static createOrder() {
+    static createOrder(productId, quantity) {
         const requestOptions = this.getKlarnaRequestOptions();
         requestOptions.path = '/checkout/v3/orders';
         requestOptions.method = 'POST';
-        const orderBody = this.getProductDetails('id');
+        const orderBody = this.getProductDetails(productId, quantity);
         requestOptions.body = orderBody;
 
         return new Promise((resolve, reject) => {
@@ -58,26 +58,53 @@ class KlarnaService {
         })
     }
 
+    // Perhaps make this call an external API that gets order data.
+    static getOrderData(productId, quantity) {
+        const unit_price = 399700; // get from externalAPI with productId
+        const tax_rate = 1000; // get from externalAPI with productId
+        const total_amount = unit_price * quantity;
+        const total_tax_amount = total_amount - total_amount * 10000 / (10000 + tax_rate);
+        const order_lines = [{
+            "type": "physical",
+            "reference": "19-402-SWE",
+            "name": "Ecom Viking",
+            "quantity": quantity,
+            "quantity_unit": "pcs",
+            unit_price,
+            tax_rate,
+            total_amount,
+            "total_discount_amount": 0,
+            total_tax_amount
+        }];
+        const order_amount = order_lines[0].total_amount;
+        const order_tax_amount = order_lines[0].total_tax_amount;
+        console.log({
+            order_amount,
+            order_tax_amount,
+            order_lines
+        });
+        return {
+            order_amount,
+            order_tax_amount,
+            order_lines
+        };
+    }
+
     // TODO
-    static getProductDetails(id) {
+    static getProductDetails(productId, quantity) {
+        const {
+            order_amount,
+            order_tax_amount,
+            order_lines
+        } = this.getOrderData(productId, quantity);
+
         return JSON.stringify({
-            "purchase_country": "SE",
-            "purchase_currency": "SEK",
-            "locale": "sv",
-            "order_amount": 50000,
-            "order_tax_amount": 4545,
-            "order_lines": [{
-                "type": "physical",
-                "reference": "19-402-USA",
-                "name": "Red T-Shirt",
-                "quantity": 5,
-                "quantity_unit": "pcs",
-                "unit_price": 10000,
-                "tax_rate": 1000,
-                "total_amount": 50000,
-                "total_discount_amount": 0,
-                "total_tax_amount": 4545
-            }],
+            "purchase_country": config.klarna.purchase_country,
+            "purchase_currency": config.klarna.purchase_currency,
+            "locale": config.klarna.locale,
+            order_amount,
+            order_tax_amount,
+            order_lines,
             "merchant_urls": {
                 "terms": `${config.klarna.merchantTermsUrl}`,
                 "checkout": `${config.klarna.merchantCheckoutUrl}?order_id={checkout.order.id}"`,

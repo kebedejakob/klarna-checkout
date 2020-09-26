@@ -23,7 +23,13 @@ app.get('/', function (req, res, next) {
     const productID = req.query.productID;
     const quantity = req.query.quantity;
 
-    const createOrderPromise = KlarnaService.createOrder();
+    if (!productID || !quantity) {
+        res.send('please put productID and quantity as query params in the URL');
+        console.log('please put productID and quantity as query params in the URL');
+        return;
+    }
+
+    const createOrderPromise = KlarnaService.createOrder(productID, quantity);
     createOrderPromise.then(response => {
         const klarnaCheckoutHTML = response.html_snippet;
         res.render('checkout', {
