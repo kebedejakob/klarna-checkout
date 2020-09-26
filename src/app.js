@@ -16,7 +16,7 @@ const hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
-
+app.use('/static', express.static('public'))
 // app.enable('view cache'); enable  in prod
 
 // Routes:
