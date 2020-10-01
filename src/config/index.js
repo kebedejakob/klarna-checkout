@@ -26,6 +26,11 @@ if (process.env.NODE_ENV === 'production') {
             webhook_host: process.env.ZAPIER_WEBHOOK_HOST,
             create_teachable_account_path: process.env.ZAPIER_CREATE_TEACHABLE_ACCOUNT_WEBHOOK_PATH,
         },
+        mmr: {
+            customer: {
+                name: process.env.CUSTOMER_NAME
+            }
+        }
     }
 } else if (process.env.NODE_ENV === 'development') {
     conf = {
@@ -50,6 +55,11 @@ if (process.env.NODE_ENV === 'production') {
             webhook_host: process.env.ZAPIER_WEBHOOK_HOST,
             create_teachable_account_path: process.env.ZAPIER_CREATE_TEACHABLE_ACCOUNT_WEBHOOK_PATH,
         },
+        mmr: {
+            customer: {
+                name: process.env.CUSTOMER_NAME
+            }
+        }
     }
 }
 

@@ -5,6 +5,7 @@ class RESTService {
     static getJSON(requestOptions, onResult) {
         const port = requestOptions.port == 443 ? https : http;
         let output = '';
+        requestOptions.path = requestOptions.path.trim();
 
         const req = port.request(requestOptions, (res) => {
             console.log(`${requestOptions.host} : ${res.statusCode}`);
