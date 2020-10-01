@@ -1,7 +1,7 @@
-import config from '../config';
+import config from '../../config';
 import RESTService from './RESTService';
 
-class KlarnaService {
+class KlarnaAPIService {
 
     static getKlarnaAuth() {
         const username = config.klarna.publicKey;
@@ -46,9 +46,13 @@ class KlarnaService {
         requestOptions.path = `/checkout/v3/orders/${order_id}`;
         requestOptions.method = 'GET';
         return new Promise((resolve, reject) => {
-            RESTService.getJSON(requestOptions, (resCode, obj) => {
+            RESTService.getJSON(requestOptions, (resCode, klarna_response) => {
                 if (resCode === 200) {
-                    resolve(obj);
+                    const klarna_confirmation_snippet = klarna_response.html_snippet;
+                    resolve({
+                        klarna_response,
+                        klarna_confirmation_snippet
+                    });
                 } else {
                     reject(obj);
                 }
@@ -150,4 +154,4 @@ class KlarnaService {
     }
 }
 
-export default KlarnaService;
+export default KlarnaAPIService;
