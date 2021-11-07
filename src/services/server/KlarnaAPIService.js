@@ -102,18 +102,17 @@ class KlarnaAPIService {
 
 	// Perhaps make this call an external API that gets order data.
 	static getOrderData(productId, quantity) {
-		const unit_price = 399700; // get from externalAPI with productId
+		const unit_price = 29900; // get from externalAPI with productId
 		const tax_rate = 2500; // get from externalAPI with productId
 		const total_amount = unit_price * parseInt(quantity);
 		const total_tax_amount = total_amount - (total_amount * 10000) / (10000 + tax_rate);
 		const order_lines = [
 			{
 				type: 'digital',
-				reference: 'ECOM_VIKING_KLARNA',
-				name: 'Ecom Viking',
+				reference: 'TECHOVER_HOODIE',
+				name: 'Techover hoodie',
 				quantity: parseInt(quantity),
 				quantity_unit: 'pcs',
-				image_url: 'https://cdn.fs.teachablecdn.com/tMMFSFNLTICqp6RcY4zM',
 				unit_price,
 				tax_rate,
 				total_amount,
