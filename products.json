@@ -1,0 +1,45 @@
+{
+    "products":[
+        {
+            "type": "digital",
+            "reference": "Black",
+            "name":"Black Hoodie",
+            "quantity": null ,
+            "quantity_unit": "pcs",
+            
+            "image_url": "https://cdn.shopify.com/s/files/1/0563/3245/2018/products/Skarmavbild2021-04-21kl.15.07.11_800x.png?v=1620292283",  
+            "unit_price": 35000,
+            "tax_rate": 2500 ,
+            "total_amount": null ,
+            "total_discount_amount": 0,
+            "total_tax_amount":null
+        } ,       {
+            "type": "digital",
+            "reference": "Red",
+            "name":"Red Hoodie",
+            "quantity": null ,
+            "quantity_unit": "pcs",
+            
+            "image_url": "https://cdn.shopify.com/s/files/1/0563/3245/2018/products/Skarmavbild2021-04-21kl.15.06.25_800x.png?v=1620292283",  
+            "unit_price": 35000,
+            "tax_rate": 2500 ,
+            "total_amount": null ,
+            "total_discount_amount": 0,
+            "total_tax_amount":null
+        } ,
+        {
+            "type": "digital",
+            "reference": "Yellow",
+            "name":"Yellow Hoodie",
+            "quantity": null ,
+            "quantity_unit": "pcs",
+            
+            "image_url": "https://cdn.shopify.com/s/files/1/0563/3245/2018/products/Skarmavbild2021-04-21kl.15.06.25_800x.png?v=1620292283",  
+            "unit_price": 39000,
+            "tax_rate": 2500 ,
+            "total_amount": null ,
+            "total_discount_amount": 0,
+            "total_tax_amount":null
+        } 
+    ]
+}

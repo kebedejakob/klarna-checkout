@@ -1,5 +1,6 @@
 import config from '../../config';
 import RESTService from './RESTService';
+const fs = require('fs');
 
 class KlarnaAPIService {
 
@@ -24,11 +25,11 @@ class KlarnaAPIService {
         };
     }
 
-    static createOrder(productId, quantity) {
+    static createOrder(productId, quantity, ) {
         const requestOptions = this.getKlarnaRequestOptions();
         requestOptions.path = '/checkout/v3/orders';
         requestOptions.method = 'POST';
-        const orderBody = this.getProductDetails(productId, quantity);
+        const orderBody = this.getProductDetails(productId, quantity,);
         requestOptions.body = orderBody;
         return new Promise((resolve, reject) => {
             RESTService.getJSON(requestOptions, (resCode, obj) => {
@@ -79,12 +80,12 @@ class KlarnaAPIService {
         })
     }
 
-    static captureOrder(order_id, productId, quantity) {
+    static captureOrder(order_id, productId, quantity,) {
         const requestOptions = this.getKlarnaRequestOptions();
         requestOptions.path = `/ordermanagement/v1/orders/${order_id}/captures`;
         requestOptions.method = 'POST';
 
-        const orderData = this.getOrderData(productId, quantity);
+        const orderData = this.getOrderData(productId, quantity,);
         requestOptions.body = JSON.stringify({
             captured_amount: orderData.order_amount,
             reference: orderData.reference
@@ -102,24 +103,18 @@ class KlarnaAPIService {
     }
 
     // Perhaps make this call an external API that gets order data.
-    static getOrderData(productId, quantity) {
-        const unit_price = 399700; // get from externalAPI with productId
-        const tax_rate = 2500; // get from externalAPI with productId
+    static getOrderData(productId, quantity,) {
+        const rawdata = fs.readFileSync('products.json');
+        const {products}  = JSON.parse(rawdata);
+        const product = products.find(product => product.reference === productId);
+        const {unit_price,tax_rate} = product;
+        product.quantity = quantity;
         const total_amount = unit_price * parseInt(quantity);
+        product.total_amount = total_amount;
         const total_tax_amount = total_amount - total_amount * 10000 / (10000 + tax_rate);
-        const order_lines = [{
-            "type": "digital",
-            "reference": "ECOM_VIKING_KLARNA",
-            "name": "Ecom Viking",
-            "quantity": parseInt(quantity),
-            "quantity_unit": "pcs",
-            "image_url": 'https://cdn.fs.teachablecdn.com/tMMFSFNLTICqp6RcY4zM',
-            unit_price,
-            tax_rate,
-            total_amount,
-            "total_discount_amount": 0,
-            total_tax_amount
-        }];
+        product.total_tax_amount = total_tax_amount;
+        console.log(product)
+        const order_lines = [product];
         const order_amount = order_lines[0].total_amount;
         const order_tax_amount = order_lines[0].total_tax_amount;
         return {
@@ -130,12 +125,12 @@ class KlarnaAPIService {
     }
 
     // TODO
-    static getProductDetails(productId, quantity) {
+    static getProductDetails(productId, quantity,) {
         const {
             order_amount,
             order_tax_amount,
             order_lines
-        } = this.getOrderData(productId, quantity);
+        } = this.getOrderData(productId, quantity,);
 
         return JSON.stringify({
             "purchase_country": config.klarna.purchase_country,

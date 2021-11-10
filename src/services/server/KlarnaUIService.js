@@ -5,7 +5,7 @@ class KlarnaUIService {
 
     static getKlarnaCheckoutSnippet(productID, quantity, callback = () => {}) {
         return new Promise((resolve, reject) => { // Create order and Render checkout
-            const createOrderPromise = KlarnaAPIService.createOrder(productID, quantity);
+            const createOrderPromise = KlarnaAPIService.createOrder(productID, quantity,);
             createOrderPromise.then(response => {
                 const klarna_checkout = response.html_snippet;
                 resolve(klarna_checkout);
